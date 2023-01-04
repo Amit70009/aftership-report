@@ -8,6 +8,8 @@ import '../src/App.css';
 import fileDownload from "js-file-download";
 const cors = require('cors');
 
+
+
 function App () { 
   const [user, setUser] = useState([]); 
   const [apiKey, setApiKey] = useState("");
@@ -15,7 +17,7 @@ function App () {
   const [minCreate, setMinCreate] = useState("");
   const [maxCreate, setMaxCreate] = useState("");
   const [page, setPage] = useState(null);
-
+  const [slug, setSlug] = useState(null);
  
 
   const fetchData = async (e) => {
@@ -29,34 +31,38 @@ function App () {
        /*  responseType: "blob" */
       })
       const res = await newres.data.data.trackings
-    /*   arr.push(newres.data.data.trackings) */
-   /*    console.log(arr); */
+  
         
         const pageNumber = newres.data.data.count/200;
         const exactPage = Math.ceil(pageNumber);
+        if(pageNumber == 0){
+          alert("No data found")
+        }
       
         for(let i=1; i<=exactPage; i++) {
         var newarr = []
-            let n = await axios.get(`https://api.aftership.com/v4/trackings/?tag=${tag}&created_at_min=${minCreate}&created_at_max=${maxCreate}&page=${i}&limit=200`, {
+            let n = await axios.get(`https://api.aftership.com/v4/trackings/?tag=${tag}&created_at_min=${minCreate}&created_at_max=${maxCreate}&page=${i}&limit=200&slug=${slug}`, {
                 headers: {
                   "Content-Type": "application/json",
                   "aftership-api-key": `${apiKey}`
                 },
                 })
             arr.push(n.data.data.trackings)
+            console.log(arr);
          if(arr.length == exactPage){
-          var merged = [].concat.apply([], arr);
-       
-          fileDownload(parse(merged), `${tag}_report.csv`)
+         /*  var merged = [].concat.apply([], arr); */
+
+        /*   fileDownload(parse(merged), `${tag}_report.csv`) */
          }
     
               }
               
             }
         
-              
+
 
   return (
+    <div className="body">
     <main>
       <h1 className="header">AfterShip account tracking number Download Tool</h1>
       <div className="left">
@@ -69,6 +75,8 @@ function App () {
                 >
             <div className="main"><TextField required fullWidth label="API KEY" id="fullWidth" onChange={(event) => setApiKey(event.target.value)} /></div>
             <label>Please enter the status</label>
+            <div className="main"><TextField required fullWidth label="API KEY" id="fullWidth" onChange={(event) => setSlug(event.target.value)} /></div>
+            <label>Please enter the status</label>
             <div className="main"><TextField required fullWidth label="Status" type={"text"} id="fullWidth" onChange={(event) => setTag(event.target.value)} /> </div>
             <label className="main">Please enter the Min create date</label>
             <div className="main"><TextField required className="main" fullWidth type={"date"} id="fullWidth" onChange={(event) => setMinCreate(event.target.value)} /></div>
@@ -79,6 +87,7 @@ function App () {
     </div>
     
     </main>
+    </div>
   );
 
 }
