@@ -151,7 +151,7 @@ export default function App () {
                 type="text"
                 id="slug"
                 onChange={(event) => setSlug(event.target.value)}
-              /> <label>Please enter the Maximum create date</label>
+              /> <label>Please enter the Minimum create date</label>
               <TextField
                 margin="normal"
                 fullWidth
